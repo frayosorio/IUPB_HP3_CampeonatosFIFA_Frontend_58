@@ -18,4 +18,12 @@ export class SeleccionService {
     return this.http.get<Seleccion[]>(`${this.url}listar`);
   }
 
+  public buscar(opcion:number, dato:string): Observable<Seleccion[]> {
+    return this.http.get<Seleccion[]>(`${this.url}buscar/${opcion}/${dato}`);
+  }
+
+  public agregar(seleccion: Seleccion): Observable<Seleccion> {
+    return this.http.post<Seleccion>(`${this.url}agregar`, seleccion);
+  }
+
 }

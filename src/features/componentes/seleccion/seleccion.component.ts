@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { ColumnMode, NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { Seleccion } from '../../../shared/entidades/Seleccion';
 import { SeleccionService } from '../../../core/servicios/seleccion.service';
+import { MatDialog } from '@angular/material/dialog';
+import { SeleccionEditarComponent } from '../seleccion-editar/seleccion-editar.component';
 
 @Component({
   selector: 'app-seleccion',
@@ -17,7 +19,7 @@ import { SeleccionService } from '../../../core/servicios/seleccion.service';
   templateUrl: './seleccion.component.html',
   styleUrl: './seleccion.component.css'
 })
-export class SeleccionComponent implements OnInit{
+export class SeleccionComponent implements OnInit {
 
   public opcionBusqueda: number = -1;
   public opcionesBusqueda: string[] = ["Nombre", "Entidad"];
@@ -30,11 +32,13 @@ export class SeleccionComponent implements OnInit{
   ];
   public modoColumna = ColumnMode;
 
-  constructor(private servicioSeleccion: SeleccionService) {
-    
-   }
+  constructor(private servicioSeleccion: SeleccionService,
+    private servicioDialogo: MatDialog,
+  ) {
 
-   ngOnInit(): void {
+  }
+
+  ngOnInit(): void {
     this.listar();
   }
 
@@ -50,6 +54,56 @@ export class SeleccionComponent implements OnInit{
   }
 
   public buscar() {
-
+    if (this.textoBusqueda.length > 0) {
+      this.servicioSeleccion.buscar(this.opcionBusqueda, this.textoBusqueda).subscribe(
+        {
+          next: response => {
+            this.selecciones = response;
+          },
+          error: error => {
+            window.alert(error.message);
+          }
+        }
+      );
+    }
+    else {
+      this.listar();
+    }
   }
+
+  public agregar() {
+    const dialogo = this.servicioDialogo.open(SeleccionEditarComponent, {
+      width: "500px",
+      height: "300px",
+      data: {
+        encabezado: "Agregando una nueva Selección",
+        seleccion: {
+          id: 0,
+          nombre: "",
+          entidad: ""
+        }
+      },
+      disableClose: true,
+    });
+    dialogo.afterClosed().subscribe({
+      next: datos => {
+        if (datos) {
+          this.servicioSeleccion.agregar(datos.seleccion).subscribe({
+            next: response => {
+              this.listar();
+            },
+            error: error => {
+              window.alert(error.message);
+            }
+          });
+        }
+      },
+      error: error => {
+        window.alert(error.message);
+      }
+    });
+  }
+
+
+
 }
