@@ -1,4 +1,4 @@
-export interface Seleccion{
+export interface Seleccion {
     id: number,
     nombre: string,
     entidad: string

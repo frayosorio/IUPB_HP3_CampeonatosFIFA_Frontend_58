@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ReferenciasMaterialModule } from '../../../shared/modules/referencias-material.module';
-import { NgFor } from '@angular/common';
+import { ReferenciasMaterialModule } from '../../../shared/modulos/referencias-material.module';
 import { FormsModule } from '@angular/forms';
+import { NgFor } from '@angular/common';
 import { ColumnMode, NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { Seleccion } from '../../../shared/entidades/Seleccion';
+import { Seleccion } from '../../../shared/entidades/seleccion';
 import { SeleccionService } from '../../../core/servicios/seleccion.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SeleccionEditarComponent } from '../seleccion-editar/seleccion-editar.component';
@@ -12,9 +12,9 @@ import { SeleccionEditarComponent } from '../seleccion-editar/seleccion-editar.c
   selector: 'app-seleccion',
   imports: [
     ReferenciasMaterialModule,
-    NgFor,
     FormsModule,
-    NgxDatatableModule,
+    NgFor,
+    NgxDatatableModule
   ],
   templateUrl: './seleccion.component.html',
   styleUrl: './seleccion.component.css'
@@ -22,8 +22,8 @@ import { SeleccionEditarComponent } from '../seleccion-editar/seleccion-editar.c
 export class SeleccionComponent implements OnInit {
 
   public opcionBusqueda: number = -1;
-  public opcionesBusqueda: string[] = ["Nombre", "Entidad"];
   public textoBusqueda: string = "";
+  public opcionesBusqueda: string[] = ["Nombre", "Entidad regente"];
 
   public selecciones: Seleccion[] = [];
   public columnas = [
@@ -33,11 +33,9 @@ export class SeleccionComponent implements OnInit {
   public modoColumna = ColumnMode;
 
   constructor(private servicioSeleccion: SeleccionService,
-    private servicioDialogo: MatDialog,
+    private dialogService: MatDialog
   ) {
-
   }
-
   ngOnInit(): void {
     this.listar();
   }
@@ -50,11 +48,15 @@ export class SeleccionComponent implements OnInit {
       error: error => {
         window.alert(error.message);
       }
-    });
+    }
+    );
   }
 
   public buscar() {
-    if (this.textoBusqueda.length > 0) {
+    if (this.textoBusqueda.length == 0) {
+      this.listar();
+    }
+    else {
       this.servicioSeleccion.buscar(this.opcionBusqueda, this.textoBusqueda).subscribe(
         {
           next: response => {
@@ -66,36 +68,38 @@ export class SeleccionComponent implements OnInit {
         }
       );
     }
-    else {
-      this.listar();
-    }
   }
 
   public agregar() {
-    const dialogo = this.servicioDialogo.open(SeleccionEditarComponent, {
-      width: "500px",
-      height: "300px",
-      data: {
-        encabezado: "Agregando una nueva Selección",
-        seleccion: {
-          id: 0,
-          nombre: "",
-          entidad: ""
-        }
-      },
-      disableClose: true,
-    });
-    dialogo.afterClosed().subscribe({
+    const ventanaModal = this.dialogService.open(SeleccionEditarComponent,
+      {
+        width: "500px",
+        height: "300px",
+        data: {
+          encabezado: "Agregando nueva Selección de Fútbol",
+          seleccion: {
+            id: 0,
+            nombre: "",
+            entidad: ""
+          }
+        },
+        disableClose: true
+      });
+
+    ventanaModal.afterClosed().subscribe({
       next: datos => {
         if (datos) {
-          this.servicioSeleccion.agregar(datos.seleccion).subscribe({
-            next: response => {
-              this.listar();
-            },
-            error: error => {
-              window.alert(error.message);
+          this.servicioSeleccion.agregar(datos.seleccion).subscribe(
+            {
+              next: response => {
+                this.listar();
+              }
+              ,
+              error: error => {
+                window.alert(error.message);
+              }
             }
-          });
+          );
         }
       },
       error: error => {

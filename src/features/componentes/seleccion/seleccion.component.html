@@ -18,10 +18,12 @@
     </mat-form-field>
     <button mat-stroked-button color="primary" (click)="buscar()">Buscar</button>
 </div>
+
 <div>
     <button mat-raised-button color="primary" (click)="agregar()">Agregar</button>
-    <ngx-datatable class="dark" [rows]="selecciones" [columns]="columnas" [limit]="10"
-    [headerHeight]="50"  [footerHeight]="50" [columnMode]="modoColumna.force">
+    <ngx-datatable class="dark" [rows]="selecciones" [columns]="columnas" 
+    [headerHeight]="50" [footerHeight]="50" [limit]="10" 
+    [columnMode]="modoColumna.force">
 
     </ngx-datatable>
 </div>

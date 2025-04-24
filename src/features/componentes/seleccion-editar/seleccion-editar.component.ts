@@ -1,13 +1,14 @@
 import { Component, Inject } from '@angular/core';
-import { Seleccion } from '../../../shared/entidades/Seleccion';
-import { ReferenciasMaterialModule } from '../../../shared/modules/referencias-material.module';
-import { FormsModule } from '@angular/forms';
+import { ReferenciasMaterialModule } from '../../../shared/modulos/referencias-material.module';
+import { Seleccion } from '../../../shared/entidades/seleccion';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
 
 export interface DatosEdicionSeleccion {
   encabezado: string;
   seleccion: Seleccion;
 }
+
 
 @Component({
   selector: 'app-seleccion-editar',
@@ -20,14 +21,13 @@ export interface DatosEdicionSeleccion {
 })
 export class SeleccionEditarComponent {
 
-
   constructor(@Inject(MAT_DIALOG_DATA) public datos: DatosEdicionSeleccion,
-    private referenciaDialogo: MatDialogRef<SeleccionEditarComponent>) {
+    private ventanaDialogo: MatDialogRef<SeleccionEditarComponent>) {
 
   }
 
   public cerrar() {
-    this.referenciaDialogo.close();
+    this.ventanaDialogo.close();
   }
 
 }
