@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ReferenciasMaterialModule } from '../../../shared/modulos/referencias-material.module';
 import { FormsModule } from '@angular/forms';
 import { NgFor } from '@angular/common';
-import { ColumnMode, NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { ColumnMode, DatatableComponent, NgxDatatableModule, SelectionType } from '@swimlane/ngx-datatable';
 import { Seleccion } from '../../../shared/entidades/seleccion';
 import { SeleccionService } from '../../../core/servicios/seleccion.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -20,6 +20,8 @@ import { SeleccionEditarComponent } from '../seleccion-editar/seleccion-editar.c
   styleUrl: './seleccion.component.css'
 })
 export class SeleccionComponent implements OnInit {
+  @ViewChild(DatatableComponent) tabla!: DatatableComponent;
+  public readonly TAMANO: number = 10;
 
   public opcionBusqueda: number = -1;
   public textoBusqueda: string = "";
@@ -31,19 +33,38 @@ export class SeleccionComponent implements OnInit {
     { name: "Entidad Regente", prop: "entidad" }
   ];
   public modoColumna = ColumnMode;
+  public tipoSeleccion = SelectionType;
+
+  public seleccionEscogida: Seleccion | undefined;
+  public indiceSeleccionEscogida: number = -1;
 
   constructor(private servicioSeleccion: SeleccionService,
     private dialogService: MatDialog
   ) {
   }
   ngOnInit(): void {
-    this.listar();
+    this.listar(-1);
   }
 
-  public listar() {
+  escoger(event: any) {
+    if (event.type == "click") {
+      this.seleccionEscogida = event.row;
+      this.indiceSeleccionEscogida = this.selecciones.findIndex(seleccion => seleccion == this.seleccionEscogida);
+    }
+  }
+
+
+  public listar(idSeleccionado: number) {
     this.servicioSeleccion.listar().subscribe({
       next: response => {
         this.selecciones = response;
+        if (idSeleccionado >= 0) {
+          this.indiceSeleccionEscogida = this.selecciones.findIndex(seleccion => seleccion.id == idSeleccionado);
+          this.seleccionEscogida = this.selecciones[this.indiceSeleccionEscogida];
+          setTimeout(() => {
+            this.tabla.offset = Math.floor(this.indiceSeleccionEscogida / this.TAMANO);
+          });
+        }
       },
       error: error => {
         window.alert(error.message);
@@ -54,7 +75,7 @@ export class SeleccionComponent implements OnInit {
 
   public buscar() {
     if (this.textoBusqueda.length == 0) {
-      this.listar();
+      this.listar(-1);
     }
     else {
       this.servicioSeleccion.buscar(this.opcionBusqueda, this.textoBusqueda).subscribe(
@@ -92,7 +113,7 @@ export class SeleccionComponent implements OnInit {
           this.servicioSeleccion.agregar(datos.seleccion).subscribe(
             {
               next: response => {
-                this.listar();
+                this.listar(response.id);
               }
               ,
               error: error => {
