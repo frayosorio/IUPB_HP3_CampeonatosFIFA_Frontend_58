@@ -27,4 +27,8 @@ export class SeleccionService {
     return this.http.post<Seleccion>(`${this.url}agregar`, seleccion);
   }
 
+  public modificar(seleccion: Seleccion): Observable<Seleccion> {
+    return this.http.put<Seleccion>(`${this.url}modificar`, seleccion);
+  }
+
 }

@@ -129,6 +129,46 @@ export class SeleccionComponent implements OnInit {
     });
   }
 
+  public modificar() {
+    if (this.seleccionEscogida) {
+      const ventanaModal = this.dialogService.open(SeleccionEditarComponent,
+        {
+          width: "500px",
+          height: "300px",
+          data: {
+            encabezado: `Editando la Selección ${this.seleccionEscogida.nombre}`,
+            seleccion: this.seleccionEscogida
+          },
+          disableClose: true
+        });
+      ventanaModal.afterClosed().subscribe({
+        next: datos => {
+          if (datos) {
+            this.servicioSeleccion.modificar(datos.seleccion).subscribe(
+              {
+                next: response => {
+                  this.selecciones[this.indiceSeleccionEscogida] = response;
+                }
+                ,
+                error: error => {
+                  window.alert(error.message);
+                }
+              }
+            );
+          }
+        },
+        error: error => {
+          window.alert(error.message);
+        }
+      });
+    }
+    else {
+      window.alert("Debe escoger alguna de las selecciones listadas");
+    }
+  }
 
+  verificarEliminar() {
+
+  }
 
 }
