@@ -31,4 +31,8 @@ export class SeleccionService {
     return this.http.put<Seleccion>(`${this.url}modificar`, seleccion);
   }
 
+  public eliminar(idSeleccion: number): Observable<boolean> {
+    return this.http.delete<boolean>(`${this.url}eliminar/${idSeleccion}`);
+  }
+
 }
