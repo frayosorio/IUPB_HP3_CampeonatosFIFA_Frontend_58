@@ -8,6 +8,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { CampeonatoEditarComponent } from '../campeonato-editar/campeonato-editar.component';
 import { DecidirComponent } from '../../../shared/componentes/decidir/decidir.component';
 import { NgFor } from '@angular/common';
+import { SeleccionService } from '../../../core/servicios/seleccion.service';
+import { Seleccion } from '../../../shared/entidades/seleccion';
 
 @Component({
   selector: 'app-campeonato',
@@ -28,6 +30,7 @@ export class CampeonatoComponent implements OnInit {
   public textoBusqueda: string = "";
   public opcionesBusqueda: string[] = ["Nombre", "Año", "País Organizador"];
 
+  public selecciones: Seleccion[] = [];
   public campeonatos: Campeonato[] = [];
   public columnas = [
     { name: "Nombre", prop: "nombre" },
@@ -41,11 +44,13 @@ export class CampeonatoComponent implements OnInit {
   public indiceCampeonatoEscogido: number = -1;
 
   constructor(private servicioCampeonato: CampeonatoService,
+    private servicioSeleccion: SeleccionService,
     private dialogService: MatDialog
   ) {
   }
   ngOnInit(): void {
     this.listar(-1);
+    this.listarSelecciones();
   }
 
   escoger(event: any) {
@@ -55,13 +60,23 @@ export class CampeonatoComponent implements OnInit {
     }
   }
 
+  public listarSelecciones() {
+    this.servicioSeleccion.listar().subscribe({
+      next: response => {
+        this.selecciones = response;
+      },
+      error: error => {
+        window.alert(error.message);
+      }
+    });
+  }
 
-  public listar(idCampeonatoado: number) {
+  public listar(idSeleccionado: number) {
     this.servicioCampeonato.listar().subscribe({
       next: response => {
         this.campeonatos = response;
-        if (idCampeonatoado >= 0) {
-          this.indiceCampeonatoEscogido = this.campeonatos.findIndex(campeonato => campeonato.id == idCampeonatoado);
+        if (idSeleccionado >= 0) {
+          this.indiceCampeonatoEscogido = this.campeonatos.findIndex(campeonato => campeonato.id == idSeleccionado);
           this.campeonatoEscogido = this.campeonatos[this.indiceCampeonatoEscogido];
           setTimeout(() => {
             this.tabla.offset = Math.floor(this.indiceCampeonatoEscogido / this.TAMANO);
@@ -97,7 +112,7 @@ export class CampeonatoComponent implements OnInit {
     const ventanaModal = this.dialogService.open(CampeonatoEditarComponent,
       {
         width: "500px",
-        height: "300px",
+        height: "400px",
         data: {
           encabezado: "Agregando nuevo Campeonato Mundial de Fútbol",
           campeonato: {
@@ -111,7 +126,8 @@ export class CampeonatoComponent implements OnInit {
               nombre: "",
               entidad: ""
             }
-          }
+          },
+          selecciones: this.selecciones
         },
         disableClose: true
       });
@@ -145,10 +161,11 @@ export class CampeonatoComponent implements OnInit {
       const ventanaModal = this.dialogService.open(CampeonatoEditarComponent,
         {
           width: "500px",
-          height: "300px",
+          height: "400px",
           data: {
             encabezado: `Editando el Campeonato ${this.campeonatoEscogido.nombre}`,
-            campeonato: this.campeonatoEscogido
+            campeonato: this.campeonatoEscogido,
+            selecciones: this.selecciones
           },
           disableClose: true
         });

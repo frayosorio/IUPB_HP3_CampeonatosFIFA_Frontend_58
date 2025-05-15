@@ -3,17 +3,21 @@ import { ReferenciasMaterialModule } from '../../../shared/modulos/referencias-m
 import { FormsModule } from '@angular/forms';
 import { Campeonato } from '../../../shared/entidades/campeonato';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Seleccion } from '../../../shared/entidades/seleccion';
+import { NgFor } from '@angular/common';
 
 export interface DatosEdicionCampeonato {
   encabezado: string;
   campeonato: Campeonato;
+  selecciones: Seleccion[];
 }
 
 @Component({
   selector: 'app-campeonato-editar',
   imports: [
     ReferenciasMaterialModule,
-    FormsModule
+    FormsModule,
+    NgFor
   ],
   templateUrl: './campeonato-editar.component.html',
   styleUrl: './campeonato-editar.component.css'
