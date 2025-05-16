@@ -1,0 +1,12 @@
+<div mat-dialog-content>
+    <h2>{{datos.encabezado}}</h2>
+    <ngx-datatable class="dark" [rows]="datos.encuentros" [columns]="columnas" [rowHeight]="'auto'" [headerHeight]="50"
+        [footerHeight]="50" [limit]="5" [columnMode]="modoColumna.standard">
+        <ng-template #fechaTemplate let-row="row">
+            {{ row.fecha | date:'dd/MM/yyyy' }}
+        </ng-template>
+    </ngx-datatable>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button color="primary" (click)="cerrar()">Cerrar</button>
+</div>
