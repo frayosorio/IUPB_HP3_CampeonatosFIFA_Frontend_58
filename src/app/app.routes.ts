@@ -5,6 +5,7 @@ import { CampeonatoComponent } from '../features/componentes/campeonato/campeona
 import { GrupoComponent } from '../features/componentes/grupo/grupo.component';
 
 export const routes: Routes = [
+    { path: "", redirectTo: "inicio", pathMatch: "full" },
     { path: "inicio", component: InicioComponent },
     { path: "selecciones", component: SeleccionComponent },
     { path: "campeonatos", component: CampeonatoComponent },
