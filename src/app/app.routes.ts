@@ -4,6 +4,8 @@ import { SeleccionComponent } from '../features/componentes/seleccion/seleccion.
 import { CampeonatoComponent } from '../features/componentes/campeonato/campeonato.component';
 import { GrupoComponent } from '../features/componentes/grupo/grupo.component';
 
+export const RUTA_DEFAULT = '/inicio';
+
 export const routes: Routes = [
     { path: "", redirectTo: "inicio", pathMatch: "full" },
     { path: "inicio", component: InicioComponent },
