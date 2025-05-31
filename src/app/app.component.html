@@ -13,7 +13,7 @@
 
     <mat-sidenav-content>
         <mat-toolbar>
-            <button mat-icon-button (click)="menuLateral.toggle()">
+            <button *ngIf="usuarioActual" mat-icon-button (click)="menuLateral.toggle()">
                 <mat-icon>menu</mat-icon>
             </button>
             <button mat-icon-button>
@@ -21,10 +21,13 @@
             </button>
             <img src="imagenes/Logo FIFA.jpg" height="80px">
             <div class="centrar">Campeonatos de la FIFA</div>
-            <button mat-raised-button (click)="login()">
-                <mat-icon>person</mat-icon>
-                Login
-            </button>
+
+            <div *ngIf="!usuarioActual">
+                <button mat-raised-button (click)="login()">
+                    <mat-icon>person</mat-icon>
+                    Login
+                </button>
+            </div>
         </mat-toolbar>
 
         <router-outlet></router-outlet>

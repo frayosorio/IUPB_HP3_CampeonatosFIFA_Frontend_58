@@ -8,7 +8,7 @@ bootstrapApplication(AppComponent, {
   ...appConfig,
   providers: [
     ...appConfig.providers!,
-    importProvidersFrom(CoreModule) // ✅ Importa tu CoreModule aquí
+    importProvidersFrom(CoreModule) 
   ]
 })
   .catch((err) => console.error(err));

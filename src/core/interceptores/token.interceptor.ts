@@ -13,19 +13,19 @@ export class TokenInterceptor implements HttpInterceptor {
     private router: Router
   ) {}
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(solicitudHttp: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.autorizacionServicio.obtenerToken();
 
-    let authReq = req;
+    let solicitudHttpAutorizada = solicitudHttp;
     if (token) {
-      authReq = req.clone({
+      solicitudHttpAutorizada = solicitudHttp.clone({
         setHeaders: {
           Authorization: `Bearer ${token}`
         }
       });
     }
 
-    return next.handle(authReq).pipe(
+    return next.handle(solicitudHttpAutorizada).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           // Redirige al login si el token no es válido o expiró

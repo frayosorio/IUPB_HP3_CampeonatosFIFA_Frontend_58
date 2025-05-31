@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { ReferenciasMaterialModule } from '../shared/modulos/referencias-material.module';
-import { NgFor } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginComponent } from '../features/componentes/login/login.component';
 import { UsuarioService } from '../core/servicios/usuario.service';
@@ -13,7 +13,7 @@ import { AutorizacionService } from '../core/servicios/autorizacion.service';
   imports: [
     RouterOutlet, RouterModule,
     ReferenciasMaterialModule,
-    NgFor
+    NgFor, NgIf
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
